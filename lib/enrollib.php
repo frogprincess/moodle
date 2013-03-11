@@ -2097,6 +2097,7 @@ abstract class enrol_plugin {
 
         $subject = get_string('expirymessageenrolledsubject', 'enrol_'.$name, $a);
         $body = get_string('expirymessageenrolledbody', 'enrol_'.$name, $a);
+        $course = $DB->get_record('course', array('id'=>$ue->courseid));
 
         $message = new stdClass();
         $message->notification      = 1;
@@ -2111,6 +2112,7 @@ abstract class enrol_plugin {
         $message->smallmessage      = $subject;
         $message->contexturlname    = $a->course;
         $message->contexturl        = (string)new moodle_url('/course/view.php', array('id'=>$ue->courseid));
+        $message->course = $course;
 
         if (message_send($message)) {
             $trace->output("notifying user $ue->userid that enrolment in course $ue->courseid expires on ".userdate($ue->timeend, '', $CFG->timezone), 1);
@@ -2166,6 +2168,7 @@ abstract class enrol_plugin {
 
         $subject = get_string('expirymessageenrollersubject', 'enrol_'.$name, $a);
         $body = get_string('expirymessageenrollerbody', 'enrol_'.$name, $a);
+        $course = $DB->get_record('course', array('id'=>$instance->courseid));
 
         $message = new stdClass();
         $message->notification      = 1;
@@ -2180,6 +2183,7 @@ abstract class enrol_plugin {
         $message->smallmessage      = $subject;
         $message->contexturlname    = $a->course;
         $message->contexturl        = $a->extendurl;
+        $message->course = $course;
 
         if (message_send($message)) {
             $trace->output("notifying user $enroller->id about all expiring $name enrolments in course $instance->courseid", 1);

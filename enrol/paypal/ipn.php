@@ -148,6 +148,7 @@ if (strlen($result) > 0) {
             $eventdata->fullmessageformat = FORMAT_PLAIN;
             $eventdata->fullmessagehtml   = '';
             $eventdata->smallmessage      = '';
+            $eventdata->course = $course;
             message_send($eventdata);
 
             message_paypal_error_to_admin("Payment pending", $data);
@@ -250,6 +251,7 @@ if (strlen($result) > 0) {
             $eventdata->fullmessageformat = FORMAT_PLAIN;
             $eventdata->fullmessagehtml   = '';
             $eventdata->smallmessage      = '';
+            $eventdata->course = $course;
             message_send($eventdata);
 
         }
@@ -269,6 +271,7 @@ if (strlen($result) > 0) {
             $eventdata->fullmessageformat = FORMAT_PLAIN;
             $eventdata->fullmessagehtml   = '';
             $eventdata->smallmessage      = '';
+            $eventdata->course = $course;
             message_send($eventdata);
         }
 
@@ -288,6 +291,7 @@ if (strlen($result) > 0) {
                 $eventdata->fullmessageformat = FORMAT_PLAIN;
                 $eventdata->fullmessagehtml   = '';
                 $eventdata->smallmessage      = '';
+                $eventdata->course = $course;
                 message_send($eventdata);
             }
         }

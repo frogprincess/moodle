@@ -734,6 +734,7 @@ function forum_cron() {
 
                 $eventdata->contexturl = "{$CFG->wwwroot}/mod/forum/discuss.php?d={$discussion->id}#p{$post->id}";
                 $eventdata->contexturlname = $discussion->name;
+                $eventdata->course = $course;
 
                 $mailresult = message_send($eventdata);
                 if (!$mailresult){
