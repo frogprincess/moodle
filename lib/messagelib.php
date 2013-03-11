@@ -46,6 +46,7 @@ require_once(dirname(dirname(__FILE__)) . '/message/lib.php');
  *  notification bool should the message be considered as a notification rather than a personal message
  *  contexturl string if this is a notification then you can specify a url to view the event. For example the forum post the user is being notified of.
  *  contexturlname string the display text for contexturl
+ *  course object
  *
  * @category message
  * @param object $eventdata information about the message (component, userfrom, userto, ...)

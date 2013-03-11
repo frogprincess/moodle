@@ -49,7 +49,8 @@ while(!feof($fd)) {
     $a->date = userdate($log->time);
 
     $a->action = $action;
-    $a->course = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
+    $a->course = $course;
+    $a->coursename = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
     $a->user = fullname($user);
 
     notify_user($user,$subject,$a);
@@ -74,6 +75,7 @@ function notify_user($user,$subject,$a) {
     $eventdata->fullmessageformat = FORMAT_PLAIN;
     $eventdata->fullmessagehtml   = '';
     $eventdata->smallmessage      = '';
+    $eventdata->course = $a->course;
     message_send($eventdata);
 }
 
@@ -93,6 +95,7 @@ function notify_admins($user,$subject,$a) {
         $eventdata->fullmessageformat = FORMAT_PLAIN;
         $eventdata->fullmessagehtml   = '';
         $eventdata->smallmessage      = '';
+        $eventdata->course = $a->course;
         message_send($eventdata);
     }
 }

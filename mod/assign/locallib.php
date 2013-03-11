@@ -4066,6 +4066,7 @@ class assign {
         $eventdata->notification    = 1;
         $eventdata->contexturl      = $info->url;
         $eventdata->contexturlname  = $info->assignment;
+        $eventdata->course = $course;
 
         message_send($eventdata);
     }

@@ -1777,12 +1777,12 @@ $string['viewprofile'] = 'View profile';
 $string['views'] = 'Views';
 $string['viewsolution'] = 'view solution';
 $string['virusfound'] = 'Attention administrator! Clam AV has found a virus in a file uploaded by {$a->user} for the course {$a->course}. Here is the output of clamscan:';
-$string['virusfoundlater'] = 'A file you uploaded on {$a->date} with the filename {$a->filename} for the course {$a->course} has since been found to contain a virus.  Here is a summary of what has happened to your file:
+$string['virusfoundlater'] = 'A file you uploaded on {$a->date} with the filename {$a->filename} for the course {$a->coursename} has since been found to contain a virus.  Here is a summary of what has happened to your file:
 
 {$a->action}
 
 If this was submitted work, you may want to resubmit it so that your tutor can see it.';
-$string['virusfoundlateradmin'] = 'Attention administrator! A file that was uploaded on {$a->date} with the filename {$a->filename} for the course {$a->course} by the user {$a->user} has since been found to contain a virus.  Here is a summary of what has happened to the file:
+$string['virusfoundlateradmin'] = 'Attention administrator! A file that was uploaded on {$a->date} with the filename {$a->filename} for the course {$a->coursename} by the user {$a->user} has since been found to contain a virus.  Here is a summary of what has happened to the file:
 
 {$a->action}
 
