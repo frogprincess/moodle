@@ -2168,7 +2168,6 @@ abstract class enrol_plugin {
 
         $subject = get_string('expirymessageenrollersubject', 'enrol_'.$name, $a);
         $body = get_string('expirymessageenrollerbody', 'enrol_'.$name, $a);
-        $course = $DB->get_record('course', array('id'=>$instance->courseid));
 
         $message = new stdClass();
         $message->notification      = 1;
