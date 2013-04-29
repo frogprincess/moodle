@@ -49,16 +49,17 @@ while(!feof($fd)) {
     $a->date = userdate($log->time);
 
     $a->action = $action;
-    $a->course = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
+    $a->course = $course;
+    $a->coursename = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
     $a->user = fullname($user);
 
-    notify_user($user,$subject,$a,$course);
-    notify_admins($user,$subject,$a,$course);
+    notify_user($user,$subject,$a);
+    notify_admins($user,$subject,$a);
 }
 fclose($fd);
 
 
-function notify_user($user,$subject,$a,$course) {
+function notify_user($user,$subject,$a) {
 
     if (!$user) {
         return false;
@@ -74,12 +75,12 @@ function notify_user($user,$subject,$a,$course) {
     $eventdata->fullmessageformat = FORMAT_PLAIN;
     $eventdata->fullmessagehtml   = '';
     $eventdata->smallmessage      = '';
-    $eventdata->course = $course;
+    $eventdata->course = $a->course;
     message_send($eventdata);
 }
 
 
-function notify_admins($user,$subject,$a,$course) {
+function notify_admins($user,$subject,$a) {
 
     $admins = get_admins();
 
@@ -94,7 +95,7 @@ function notify_admins($user,$subject,$a,$course) {
         $eventdata->fullmessageformat = FORMAT_PLAIN;
         $eventdata->fullmessagehtml   = '';
         $eventdata->smallmessage      = '';
-        $eventdata->course = $course;
+        $eventdata->course = $a->course;
         message_send($eventdata);
     }
 }

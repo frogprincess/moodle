@@ -1319,11 +1319,10 @@ function quiz_get_slot_for_question($quiz, $questionid) {
  *
  * @param object $a lots of useful information that can be used in the message
  *      subject and body.
- * @param object $course
  *
  * @return int|false as for {@link message_send()}.
  */
-function quiz_send_confirmation($recipient, $a, $course) {
+function quiz_send_confirmation($recipient, $a) {
 
     // Add information about the recipient to $a.
     // Don't do idnumber. we want idnumber to be the submitter's idnumber.
@@ -1346,7 +1345,7 @@ function quiz_send_confirmation($recipient, $a, $course) {
     $eventdata->smallmessage      = get_string('emailconfirmsmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizurl;
     $eventdata->contexturlname    = $a->quizname;
-    $eventdata->course = $course;
+    $eventdata->course = $a->course;
 
     // ... and send it.
     return message_send($eventdata);
@@ -1357,11 +1356,10 @@ function quiz_send_confirmation($recipient, $a, $course) {
  *
  * @param object $recipient user object of the intended recipient
  * @param object $a associative array of replaceable fields for the templates
- * @param object $course
  *
  * @return int|false as for {@link message_send()}.
  */
-function quiz_send_notification($recipient, $submitter, $a, $course) {
+function quiz_send_notification($recipient, $submitter, $a) {
 
     // Recipient info for template.
     $a->useridnumber = $recipient->idnumber;
@@ -1384,7 +1382,7 @@ function quiz_send_notification($recipient, $submitter, $a, $course) {
     $eventdata->smallmessage      = get_string('emailnotifysmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizreviewurl;
     $eventdata->contexturlname    = $a->quizname;
-    $eventdata->course = $course;
+    $eventdata->course = $a->course;
 
     // ... and send it.
     return message_send($eventdata);
@@ -1442,6 +1440,7 @@ function quiz_send_notification_messages($course, $quiz, $attempt, $context, $cm
 
     $a = new stdClass();
     // Course info.
+    $a->course = $course;
     $a->coursename      = $course->fullname;
     $a->courseshortname = $course->shortname;
     // Quiz info.
@@ -1467,7 +1466,7 @@ function quiz_send_notification_messages($course, $quiz, $attempt, $context, $cm
     // Send notifications if required.
     if (!empty($userstonotify)) {
         foreach ($userstonotify as $recipient) {
-            $allok = $allok && quiz_send_notification($recipient, $submitter, $a, $course);
+            $allok = $allok && quiz_send_notification($recipient, $submitter, $a);
         }
     }
 
@@ -1476,7 +1475,7 @@ function quiz_send_notification_messages($course, $quiz, $attempt, $context, $cm
     // some but not all messages, and then try again later, then teachers may get
     // duplicate messages, but the student will always get exactly one.
     if ($sendconfirm) {
-        $allok = $allok && quiz_send_confirmation($submitter, $a, $course);
+        $allok = $allok && quiz_send_confirmation($submitter, $a);
     }
 
     return $allok;
@@ -1553,7 +1552,7 @@ function quiz_send_overdue_message($course, $quiz, $attempt, $context, $cm) {
     $eventdata->smallmessage      = get_string('emailoverduesmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizurl;
     $eventdata->contexturlname    = $a->quizname;
-    $eventdata->course = $course;
+    $eventdata->course = $a->course;
 
     // Send the message.
     return message_send($eventdata);
