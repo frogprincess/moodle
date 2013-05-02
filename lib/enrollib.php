@@ -2075,7 +2075,7 @@ abstract class enrol_plugin {
      * @param progress_trace $trace
      */
     protected function notify_expiry_enrolled($user, $ue, progress_trace $trace) {
-        global $CFG, $SESSION;
+        global $CFG, $SESSION, $DB;
 
         $name = $this->get_name();
 
