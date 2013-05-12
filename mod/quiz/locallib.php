@@ -1552,7 +1552,7 @@ function quiz_send_overdue_message($course, $quiz, $attempt, $context, $cm) {
     $eventdata->smallmessage      = get_string('emailoverduesmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizurl;
     $eventdata->contexturlname    = $a->quizname;
-    $eventdata->course = $a->course;
+    $eventdata->course = $course;
 
     // Send the message.
     return message_send($eventdata);
