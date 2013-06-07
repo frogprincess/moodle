@@ -1345,6 +1345,7 @@ function quiz_send_confirmation($recipient, $a) {
     $eventdata->smallmessage      = get_string('emailconfirmsmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizurl;
     $eventdata->contexturlname    = $a->quizname;
+    $eventdata->course = $a->course;
 
     // ... and send it.
     return message_send($eventdata);
@@ -1381,6 +1382,7 @@ function quiz_send_notification($recipient, $submitter, $a) {
     $eventdata->smallmessage      = get_string('emailnotifysmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizreviewurl;
     $eventdata->contexturlname    = $a->quizname;
+    $eventdata->course = $a->course;
 
     // ... and send it.
     return message_send($eventdata);
@@ -1438,6 +1440,7 @@ function quiz_send_notification_messages($course, $quiz, $attempt, $context, $cm
 
     $a = new stdClass();
     // Course info.
+    $a->course = $course;
     $a->coursename      = $course->fullname;
     $a->courseshortname = $course->shortname;
     // Quiz info.
@@ -1549,6 +1552,7 @@ function quiz_send_overdue_message($course, $quiz, $attempt, $context, $cm) {
     $eventdata->smallmessage      = get_string('emailoverduesmall', 'quiz', $a);
     $eventdata->contexturl        = $a->quizurl;
     $eventdata->contexturlname    = $a->quizname;
+    $eventdata->course = $course;
 
     // Send the message.
     return message_send($eventdata);

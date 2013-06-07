@@ -238,6 +238,7 @@ switch ($mode) {
                 // Required for messaging framework
                 $eventdata->component = 'mod_lesson';
                 $eventdata->name = 'graded_essay';
+                $eventdata->course = $course; 
 
                 message_send($eventdata);
                 $essayinfo->sent = 1;
