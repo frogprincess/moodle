@@ -4792,6 +4792,7 @@ class assign {
             if ($pluginerror || $allempty) {
                 if ($allempty) {
                     $notices[] = get_string('submissionempty', 'mod_assign');
+                    $this->add_to_log('submit update (empty)', $this->format_submission_for_log($submission));
                 }
                 return false;
             }
@@ -6175,3 +6176,14 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
         return array(PORTFOLIO_FORMAT_FILE, PORTFOLIO_FORMAT_LEAP2A);
     }
 }
+
+
+/**
+ * log file add, update or delete
+ * @param stdClass $eventdata
+ */
+function log_file_submissions($eventdata) {
+    $fullurl = 'view.php?id=' . $eventdata->cmid;
+    add_to_log($eventdata->courseid, 'assign', $eventdata->action . ' file', 
+            $fullurl, $eventdata->data, $eventdata->cmid, $eventdata->userid);
+} 

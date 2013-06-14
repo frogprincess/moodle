@@ -52,3 +52,25 @@ assessable_submitted
     ->params         = // Array of module specific parameters.
         -> submission_editable = // Whether user can edit submission before assessment has been done.
 */
+
+/* List of handlers */
+$handlers = array (
+    'file_added' => array (
+        'handlerfile'      => '/mod/assign/locallib.php',
+        'handlerfunction'  => 'log_file_submissions',
+        'schedule'         => 'instant',
+        'internal'         => 1,
+    ),
+    'file_updated' => array (
+        'handlerfile'      => '/mod/assign/locallib.php',
+        'handlerfunction'  => 'log_file_submissions',
+        'schedule'         => 'instant',
+        'internal'         => 1,
+    ),
+    'file_deleted' => array (
+        'handlerfile'      => '/mod/assign/locallib.php',
+        'handlerfunction'  => 'log_file_submissions',
+        'schedule'         => 'instant',
+        'internal'         => 1,
+    )
+);

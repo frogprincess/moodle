@@ -763,9 +763,10 @@ function file_restore_source_field_from_draft_file($storedfile) {
  * @return string|null if $text was passed in, the rewritten $text is returned. Otherwise NULL.
  */
 function file_save_draft_area_files($draftitemid, $contextid, $component, $filearea, $itemid, array $options=null, $text=null, $forcehttps=false) {
-    global $USER;
+    global $USER, $COURSE;
 
     $usercontext = context_user::instance($USER->id);
+    $modulecontext = get_context_instance_by_id($contextid); 
     $fs = get_file_storage();
 
     $options = (array)$options;
@@ -806,6 +807,14 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
 
         $newhashes = array();
         $filecount = 0;
+        $eventdata = new stdClass();
+        $eventdata->modulename   = $component;
+        $eventdata->cmid         = $modulecontext->instanceid;
+        $eventdata->itemid       = $itemid;
+        $eventdata->filearea     = $filearea;
+        $eventdata->courseid     = $COURSE->id;
+        $eventdata->userid       = $USER->id;
+        
         foreach ($draftfiles as $file) {
             if (!$options['subdirs'] && ($file->get_filepath() !== '/' or $file->is_directory())) {
                 continue;
@@ -825,16 +834,29 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 $filecount++;
             }
             $newhash = $fs->get_pathname_hash($contextid, $component, $filearea, $itemid, $file->get_filepath(), $file->get_filename());
-            $newhashes[$newhash] = $file;
+            $newhashes[$newhash] = $file;            
         }
 
         // Loop through oldfiles and decide which we need to delete and which to update.
         // After this cycle the array $newhashes will only contain the files that need to be added.
-        foreach ($oldfiles as $oldfile) {
+        foreach ($oldfiles as $oldfile) {   
             $oldhash = $oldfile->get_pathnamehash();
+            $updates [$oldhash] = $file;
             if (!isset($newhashes[$oldhash])) {
                 // delete files not needed any more - deleted by user
                 $oldfile->delete();
+                // trigger an event for each file that was deleted
+                unset($updates[$oldhash]);
+                
+                if (!$oldfile->is_directory()) {
+                    $info = get_string('delete') . ": {$oldfile->get_filepath()}{$oldfile->get_filename()}
+                        ({$oldfile->get_contenthash()})";
+
+                    $eventdata->data         = $info;
+                    $eventdata->action       = 'delete';
+
+                    events_trigger('file_deleted', $eventdata);                    
+                }
                 continue;
             }
 
@@ -849,12 +871,36 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 if ($original['filename'] !== $oldfile->get_filename() || $original['filepath'] !== $oldfile->get_filepath()) {
                     // Very odd, original points to another file. Delete and create file.
                     $oldfile->delete();
+                    // trigger an event for each file that was deleted 
+                    unset($updates[$oldhash]);
+                    
+                    if (!$oldfile->is_directory()) {
+                        $info = get_string('delete') . ": {$oldfile->get_filepath()}{$oldfile->get_filename()}
+                            ({$oldfile->get_contenthash()})";
+                        
+                        $eventdata->data         = $info;
+                        $eventdata->action       = 'delete';
+
+                        events_trigger('file_deleted', $eventdata);
+                    }
                     continue;
                 }
             } else {
                 // The same file name but absence of 'original' means that file was deteled and uploaded again.
                 // By deleting and creating new file we properly manage all existing references.
                 $oldfile->delete();
+                // trigger an event for each file that was deleted 
+                unset($updates[$oldhash]);
+                
+                if (!$oldfile->is_directory()) {
+                    $info = get_string('delete') . ": {$oldfile->get_filepath()}{$oldfile->get_filename()}
+                        ({$oldfile->get_contenthash()})";
+
+                    $eventdata->data         = $info;
+                    $eventdata->action       = 'delete';
+
+                    events_trigger('file_deleted', $eventdata);
+                }
                 continue;
             }
 
@@ -863,16 +909,31 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 // file was changed, use updated with new timemodified data
                 $oldfile->delete();
                 // This file will be added later
+                unset($updates[$oldhash]);
+                // trigger an event for each file that was deleted 
+                if (!$oldfile->is_directory()) {
+                    $info = get_string('delete') . ": {$oldfile->get_filepath()}{$oldfile->get_filename()}
+                        ({$oldfile->get_contenthash()})";
+
+                    $eventdata->data         = $info;
+                    $eventdata->action       = 'delete';
+
+                    events_trigger('file_deleted', $eventdata);
+                }
                 continue;
             }
 
+            $changed = false;
+            
             // Updated author
             if ($oldfile->get_author() != $newfile->get_author()) {
                 $oldfile->set_author($newfile->get_author());
+                $changed = true;
             }
             // Updated license
             if ($oldfile->get_license() != $newfile->get_license()) {
                 $oldfile->set_license($newfile->get_license());
+                $changed = true;
             }
 
             // Updated file source
@@ -884,16 +945,19 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             }
             if ($oldfile->get_source() !== $newsource) {
                 $oldfile->set_source($newsource);
+                $changed = true;
             }
 
             // Updated sort order
             if ($oldfile->get_sortorder() != $newfile->get_sortorder()) {
                 $oldfile->set_sortorder($newfile->get_sortorder());
+                $changed = true;
             }
 
             // Update file timemodified
             if ($oldfile->get_timemodified() != $newfile->get_timemodified()) {
                 $oldfile->set_timemodified($newfile->get_timemodified());
+                $changed = true;
             }
 
             // Replaced file content
@@ -905,10 +969,21 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 $oldfile->replace_file_with($newfile);
                 // push changes to all local files that are referencing this file
                 $fs->update_references_to_storedfile($oldfile);
+                $changed = true;
             }
 
             // unchanged file or directory - we keep it as is
             unset($newhashes[$oldhash]);
+            // trigger an event when a file record is updated - use new file data
+            if ($changed && !$oldfile->is_directory()) {
+                $info = get_string('update') . ": {$newfile->get_filepath()}{$newfile->get_filename()}
+                    ({$newfile->get_contenthash()})";
+
+                $eventdata->data         = $info;
+                $eventdata->action       = 'update';
+
+                events_trigger('file_updated', $eventdata);                
+            }
         }
 
         // Add fresh file or the file which has changed status
@@ -930,6 +1005,18 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             }
 
             $fs->create_file_from_storedfile($file_record, $file);
+            // trigger an event when a file is added or updated (status changed)
+            if (!$file->is_directory()) {
+                $type = array_key_exists($newhash, $updates)? get_string('update'):get_string('add');
+                $action = array_key_exists($newhash, $updates)? 'updated' : 'added';
+                $info = $type . ": {$file->get_filepath()}{$file->get_filename()}
+                    ({$file->get_contenthash()})";
+
+                $eventdata->data         = $info;
+                $eventdata->action       = strtolower($type);
+
+                events_trigger('file_' . $action, $eventdata);                
+            }
         }
     }
 
