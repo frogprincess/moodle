@@ -766,7 +766,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
     global $USER, $COURSE;
 
     $usercontext = context_user::instance($USER->id);
-    $modulecontext = get_context_instance_by_id($contextid); 
+    $context = get_context_instance_by_id($contextid); 
     $fs = get_file_storage();
 
     $options = (array)$options;
@@ -809,7 +809,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
         $filecount = 0;
         $eventdata = new stdClass();
         $eventdata->modulename   = $component;
-        $eventdata->cmid         = $modulecontext->instanceid;
+        $eventdata->cmid         = $context->instanceid;
         $eventdata->itemid       = $itemid;
         $eventdata->filearea     = $filearea;
         $eventdata->courseid     = $COURSE->id;
@@ -855,7 +855,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                     $eventdata->data         = $info;
                     $eventdata->action       = 'delete';
 
-                    events_trigger('file_deleted', $eventdata);                    
+                    events_trigger($component . '_deleted', $eventdata);                    
                 }
                 continue;
             }
@@ -881,7 +881,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                         $eventdata->data         = $info;
                         $eventdata->action       = 'delete';
 
-                        events_trigger('file_deleted', $eventdata);
+                        events_trigger($component . '_deleted', $eventdata);
                     }
                     continue;
                 }
@@ -899,7 +899,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                     $eventdata->data         = $info;
                     $eventdata->action       = 'delete';
 
-                    events_trigger('file_deleted', $eventdata);
+                    events_trigger($component . '_deleted', $eventdata);
                 }
                 continue;
             }
@@ -918,7 +918,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                     $eventdata->data         = $info;
                     $eventdata->action       = 'delete';
 
-                    events_trigger('file_deleted', $eventdata);
+                    events_trigger($component . '_deleted', $eventdata);
                 }
                 continue;
             }
@@ -982,7 +982,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 $eventdata->data         = $info;
                 $eventdata->action       = 'update';
 
-                events_trigger('file_updated', $eventdata);                
+                events_trigger($component . '_updated', $eventdata);                
             }
         }
 
@@ -1007,15 +1007,21 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             $fs->create_file_from_storedfile($file_record, $file);
             // trigger an event when a file is added or updated (status changed)
             if (!$file->is_directory()) {
-                $type = array_key_exists($newhash, $updates)? get_string('update'):get_string('add');
-                $action = array_key_exists($newhash, $updates)? 'updated' : 'added';
+                if (array_key_exists($newhash, $updates)) {
+                    $type = get_string('update');
+                    $action = 'updated';
+                } else {
+                    $type = get_string('add');
+                    $action = 'added';
+                }
+                
                 $info = $type . ": {$file->get_filepath()}{$file->get_filename()}
                     ({$file->get_contenthash()})";
 
                 $eventdata->data         = $info;
                 $eventdata->action       = strtolower($type);
 
-                events_trigger('file_' . $action, $eventdata);                
+                events_trigger($component . '_' . $action, $eventdata);                
             }
         }
     }

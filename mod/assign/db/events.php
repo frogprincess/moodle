@@ -55,19 +55,19 @@ assessable_submitted
 
 /* List of handlers */
 $handlers = array (
-    'file_added' => array (
+    'assignsubmission_file_added' => array (
         'handlerfile'      => '/mod/assign/locallib.php',
         'handlerfunction'  => 'log_file_submissions',
         'schedule'         => 'instant',
         'internal'         => 1,
     ),
-    'file_updated' => array (
+    'assignsubmission_file_updated' => array (
         'handlerfile'      => '/mod/assign/locallib.php',
         'handlerfunction'  => 'log_file_submissions',
         'schedule'         => 'instant',
         'internal'         => 1,
     ),
-    'file_deleted' => array (
+    'assignsubmission_file_deleted' => array (
         'handlerfile'      => '/mod/assign/locallib.php',
         'handlerfunction'  => 'log_file_submissions',
         'schedule'         => 'instant',
