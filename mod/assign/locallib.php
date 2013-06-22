@@ -3590,7 +3590,6 @@ class assign {
             if ((!empty($gradebookgrade->grade) || !$emptyplugins)
                     && ($cangrade || !$gradebookgrade->hidden)) {
 
-
                 $gradefordisplay = null;
                 $gradeddate = null;
                 $grader = null;
