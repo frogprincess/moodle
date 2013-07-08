@@ -6179,7 +6179,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
 
 
 /**
- * log file add, update or delete
+ * Log file add, update or delete.
  * @param stdClass $eventdata
  */
 function log_file_submissions($eventdata) {

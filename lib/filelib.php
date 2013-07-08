@@ -845,7 +845,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             if (!isset($newhashes[$oldhash])) {
                 // delete files not needed any more - deleted by user
                 $oldfile->delete();
-                // trigger an event for each file that was deleted
+                // Trigger an event for each file that was deleted.
                 unset($updates[$oldhash]);
                 
                 if (!$oldfile->is_directory()) {
@@ -871,7 +871,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 if ($original['filename'] !== $oldfile->get_filename() || $original['filepath'] !== $oldfile->get_filepath()) {
                     // Very odd, original points to another file. Delete and create file.
                     $oldfile->delete();
-                    // trigger an event for each file that was deleted 
+                    // Trigger an event for each file that was deleted.
                     unset($updates[$oldhash]);
                     
                     if (!$oldfile->is_directory()) {
@@ -889,7 +889,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 // The same file name but absence of 'original' means that file was deteled and uploaded again.
                 // By deleting and creating new file we properly manage all existing references.
                 $oldfile->delete();
-                // trigger an event for each file that was deleted 
+                 // Trigger an event for each file that was deleted.
                 unset($updates[$oldhash]);
                 
                 if (!$oldfile->is_directory()) {
@@ -910,7 +910,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
                 $oldfile->delete();
                 // This file will be added later
                 unset($updates[$oldhash]);
-                // trigger an event for each file that was deleted 
+                // Trigger an event for each file that was deleted.
                 if (!$oldfile->is_directory()) {
                     $info = get_string('delete') . ": {$oldfile->get_filepath()}{$oldfile->get_filename()}
                         ({$oldfile->get_contenthash()})";
@@ -974,7 +974,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
 
             // unchanged file or directory - we keep it as is
             unset($newhashes[$oldhash]);
-            // trigger an event when a file record is updated - use new file data
+            // Trigger an event when a file record is updated - use new file data.
             if ($changed && !$oldfile->is_directory()) {
                 $info = get_string('update') . ": {$newfile->get_filepath()}{$newfile->get_filename()}
                     ({$newfile->get_contenthash()})";

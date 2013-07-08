@@ -53,7 +53,7 @@ assessable_submitted
         -> submission_editable = // Whether user can edit submission before assessment has been done.
 */
 
-/* List of handlers */
+/* List of handlers. */
 $handlers = array (
     'assignsubmission_file_added' => array (
         'handlerfile'      => '/mod/assign/locallib.php',
