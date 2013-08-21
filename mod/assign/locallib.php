@@ -4372,17 +4372,38 @@ class assign {
             // No need to do anything.
             return;
         }
-        if ($submission->userid) {
-            $user = $DB->get_record('user', array('id'=>$submission->userid), '*', MUST_EXIST);
+        // Is it a group submission?
+        if ($this->get_instance()->teamsubmissiongroupingid) {
+            $group = $this->get_submission_group($USER->id);
+            if ($group) {
+                $groupid = $group->id;
+            }
+            // Get the group members and notify them all
+            $members = $this->get_submission_group_members($groupid, false);
+            foreach ($members as $member) {
+                if ($USER->id != $member->id) {
+                    $this->send_notification($USER, 
+                                             $member, 
+                                             'submissioncopiedgroup', 
+                                             'assign_notification', 
+                                             $submission->timemodified);
+                } else {
+                    $this->send_notification($USER, 
+                                             $member, 
+                                             'submissioncopied', 
+                                             'assign_notification', 
+                                             $submission->timemodified);
+                }
+            }
         } else {
-            $user = $USER;
+            $this->send_notification($USER, 
+                                     $USER, 
+                                     'submissioncopied', 
+                                     'assign_notification', 
+                                     $submission->timemodified);
         }
-        $this->send_notification($user,
-                                 $user,
-                                 'submissioncopied',
-                                 'assign_notification',
-                                 $submission->timemodified);
     }
+
     /**
      * Notify student upon successful submission.
      *
@@ -4397,16 +4418,36 @@ class assign {
             // No need to do anything.
             return;
         }
-        if ($submission->userid) {
-            $user = $DB->get_record('user', array('id'=>$submission->userid), '*', MUST_EXIST);
+        // Is it a group submission?
+        if ($this->get_instance()->teamsubmissiongroupingid) {
+            $group = $this->get_submission_group($USER->id);
+            if ($group) {
+                $groupid = $group->id;
+            }
+            // Get the group members and notify them all
+            $members = $this->get_submission_group_members($groupid, false);
+            foreach ($members as $member) {
+                if ($USER->id != $member->id) {
+                    $this->send_notification($USER, 
+                                             $member, 
+                                             'submissionreceiptgroup', 
+                                             'assign_notification', 
+                                             $submission->timemodified);
+                } else {
+                    $this->send_notification($USER, 
+                                             $member, 
+                                             'submissionreceipt', 
+                                             'assign_notification', 
+                                             $submission->timemodified);
+                }
+            }
         } else {
-            $user = $USER;
+            $this->send_notification($USER, 
+                                     $USER, 
+                                     'submissionreceipt', 
+                                     'assign_notification', 
+                                     $submission->timemodified);
         }
-        $this->send_notification($user,
-                                 $user,
-                                 'submissionreceipt',
-                                 'assign_notification',
-                                 $submission->timemodified);
     }
 
     /**

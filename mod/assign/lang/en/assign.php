@@ -321,6 +321,16 @@ $string['submissioncopiedhtml'] = 'You have made a copy of your previous
 assignment submission for \'<i>{$a->assignment}</i>\'<br /><br />
 You can see the status of your <a href="{$a->url}">assignment submission</a>.';
 $string['submissioncopiedsmall'] = 'You have copied your previous assignment submission for {$a->assignment}';
+$string['submissioncopiedgrouptext'] = '{$a->username} has made a copy of a previous
+group assignment submission for \'{$a->assignment}\'
+
+You can see the status of the assignment submission:
+
+    {$a->url}';
+$string['submissioncopiedgrouphtml'] = '{$a->username} has made a copy of a previous
+group assignment submission for \'<i>{$a->assignment}</i>\'<br /><br />
+You can see the status of the <a href="{$a->url}">assignment submission</a>.';
+$string['submissioncopiedgroupsmall'] = '{$a->username} has copied a previous group assignment submission for {$a->assignment}';
 $string['submissiondrafts'] = 'Require students click submit button';
 $string['submissiondrafts_help'] = 'If enabled, students will have to click a Submit button to declare their submission as final. This allows students to keep a draft version of the submission on the system. If this setting is changed from "No" to "Yes" after students have already submitted those submissions will be regarded as final.';
 $string['submissioneditable'] = 'Student can edit this submission';
@@ -339,6 +349,17 @@ $string['submissionreceipthtml'] = 'You have submitted an
 assignment submission for \'<i>{$a->assignment}</i>\'<br /><br />
 You can see the status of your <a href="{$a->url}">assignment submission</a>.';
 $string['submissionreceiptsmall'] = 'You have submitted your assignment submission for {$a->assignment}';
+$string['submissionreceiptgrouptext'] = '{$a->username} has submitted a group
+assignment submission for \'{$a->assignment}\'
+
+You can see the status of the assignment submission:
+
+    {$a->url}';
+$string['submissionreceiptgrouphtml'] = '{$a->username} has submitted a group
+assignment submission for \'<i>{$a->assignment}</i>\'<br /><br />
+You can see the status of the <a href="{$a->url}">assignment submission</a>.';
+$string['submissionreceiptgroupsmall'] = '{$a->username} has submitted a group assignment submission for {$a->assignment}';
+
 $string['submissionslocked'] = 'This assignment is not accepting submissions';
 $string['submissionslockedshort'] = 'Submission changes not allowed';
 $string['submissions'] = 'Submissions';
