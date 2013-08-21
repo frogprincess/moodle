@@ -1259,13 +1259,26 @@ class assign {
      * @return array List of user records
      */
     public function list_participants($currentgroup, $idsonly) {
+        global $CFG;
+
         if ($idsonly) {
-            return get_enrolled_users($this->context, 'mod/assign:submit', $currentgroup, 'u.id', null, null, null,
+            $users = get_enrolled_users($this->context, 'mod/assign:submit', $currentgroup, 'u.id', null, null, null,
                     $this->show_only_active_users());
         } else {
-            return get_enrolled_users($this->context, 'mod/assign:submit', $currentgroup, 'u.*', null, null, null,
+            $users = get_enrolled_users($this->context, 'mod/assign:submit', $currentgroup, 'u.*', null, null, null,
                     $this->show_only_active_users());
         }
+
+        if ($users) {
+            // if groupmembersonly used, remove users who are not in any group
+            if (!empty($CFG->enablegroupmembersonly) and $this->get_course_module()->groupmembersonly) {
+                if ($groupingusers = groups_get_grouping_members($this->get_course_module()->groupingid, 'u.id', 'u.id')) {
+                    $users = array_intersect_key($users, $groupingusers);
+                }
+            }
+        }
+
+        return $users;
     }
 
     /**
@@ -5112,7 +5125,7 @@ class assign {
                 }
                 return false;
             }
-
+			// this causes submission object to change
             $this->update_submission($submission, $USER->id, true, $instance->teamsubmission);
 
             // Logging.
